@@ -104,39 +104,65 @@ const TableList: React.FC = () => {
    * @zh-CN 国际化配置
    * */
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<API.InterfaceInfo>[] = [
     {
-      title: '规则名称',
+      title: 'id', // 要显示的列名
+      dataIndex: 'id', // 对应字段名
+      // tip: render: 渲染类型,默认text
+      valueType: 'index',// 数据类型
+    },
+    // {
+    //   title: '规则名称',
+    //   dataIndex: 'name',
+    //   tip: 'The rule name is the unique key',
+    //   render: (dom, entity) => {
+    //     return (
+    //       <a
+    //         onClick={() => {
+    //           setCurrentRow(entity);
+    //           setShowDetail(true);
+    //         }}
+    //       >
+    //         {dom}
+    //       </a>
+    //     );
+    //   },
+    // },
+    {
+      title: '接口名称',
       dataIndex: 'name',
-      tip: 'The rule name is the unique key',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      valueType: 'text',
     },
     {
       title: '描述',
-      dataIndex: 'desc',
+      // description对应后端的字段名
+      dataIndex: 'description ',
+      //展示的文本为富文本编辑器
       valueType: 'textarea',
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val}${'万'}`,
+      title:'请求方法',
+      dataIndex : 'method',
+      valueType: 'text ' ,
+    },
+    {
+      title: 'url',
+      dataIndex: 'url',
+      valueType: 'text',
+    },
+    {
+      title: '请求头',
+      dataIndex: 'requestHeader',
+      valueType: 'textarea',
+    },
+    {
+      title: '响应头',
+      dataIndex: 'responseHeader',
+      valueType: 'textarea ' ,
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'status ',
       hideInForm: true,
       valueEnum: {
         0: {
@@ -144,34 +170,19 @@ const TableList: React.FC = () => {
           status: 'Default',
         },
         1: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        2: {
-          text: '已上线',
-          status: 'Success',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
+          text: '开启',
+          status : ' Processing',
         },
       },
     },
     {
-      title: '上次调度时间',
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder={'请输入异常原因！'} />;
-        }
-        return defaultRender(item);
-      },
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTime ' ,},
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      valueType: 'dateTime ' ,
     },
     {
       title: '操作',
@@ -193,6 +204,7 @@ const TableList: React.FC = () => {
       ],
     },
   ];
+  // 页面的内容
   return (
     <PageContainer>
       <ProTable<API.RuleListItem, API.PageParams>

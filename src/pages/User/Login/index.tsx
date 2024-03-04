@@ -1,5 +1,4 @@
 import { Footer } from '@/components';
-import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   AlipayCircleOutlined,
@@ -21,6 +20,7 @@ import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
+import {userLoginUsingPost} from "@/services/openAPI-backend/userController";
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -89,41 +89,42 @@ const Login: React.FC = () => {
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
+
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // 登录
-      const msg = await login({
+      // 调用 userLoginUsingPOST (生成的)登录，value为包含登录信息的对象（如用户名和密码）
+      const res = await userLoginUsingPost({
         ...values,
-        type,
       });
-      if (msg.status === 'ok') {
+      // 检查返回的 res 对象中是否含有 data 属性，有则表示登录成功
+      if (res.data) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+        // 创建一个新的 URL 对象，并获取当前 window.location.href 的查询参数
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        // 将用户重定向到 'redirect' 参数指定的 URL，如果 'redirect' 参数不存在，则重定向到首页 '/'
+        setTimeout(() => {// 设置一个延迟100毫秒的定时器避免setInitialState后状态还没更新就执行了history.push
+          history.push(urlParams.get('redirect') || '/');
+        },100);
+        // 更新全局状态，设置登录用户的信息
+        setInitialState({
+          loginUser: res.data
+        });
         return;
       }
-      console.log(msg);
+      console.log(res);
       // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
     } catch (error) {
+      // 设置默认的登录失败提示信息
       const defaultLoginFailureMessage = '登录失败，请重试！';
+      // 在控制台打印错误
       console.log(error);
+      // 使用 message 组件在页面显示错误信息
       message.error(defaultLoginFailureMessage);
     }
   };
+  // 下面开始页面内容
+
   const { status, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
@@ -152,7 +153,7 @@ const Login: React.FC = () => {
           }}
           actions={['其他登录方式 :', <ActionIcons key="icons" />]}
           onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+            await handleSubmit(values as API.UserLoginRequest);
           }}
         >
           <Tabs
@@ -177,7 +178,7 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="userAccount"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
@@ -191,7 +192,7 @@ const Login: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                name="userPassword"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,
