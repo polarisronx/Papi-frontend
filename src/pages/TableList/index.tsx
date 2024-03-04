@@ -1,4 +1,4 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
+import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -11,10 +11,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Drawer, Input, message } from 'antd';
+import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
+import {listinterfaceInfoByPageUsingGet} from "@/services/openAPI-backend/interfaceInfoController";
 
 /**
  * @en-US Add node
@@ -225,7 +226,18 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={rule}
+        request={async (params) => {
+          const res = await listinterfaceInfoByPageUsingGet({
+            ...params
+          })
+          if (res?.data) {
+            return {
+              data: res?.data.records || [],
+              success: true,
+              total: res.total,
+            }
+          }
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

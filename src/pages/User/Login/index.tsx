@@ -18,7 +18,7 @@ import { Helmet, history, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
+
 import Settings from '../../../../config/defaultSettings';
 import {userLoginUsingPost} from "@/services/openAPI-backend/userController";
 const useStyles = createStyles(({ token }) => {
