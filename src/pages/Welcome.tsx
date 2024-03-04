@@ -1,3 +1,4 @@
+// @ts-ignore
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Card, theme } from 'antd';
