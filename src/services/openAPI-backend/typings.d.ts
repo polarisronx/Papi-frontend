@@ -128,7 +128,7 @@ declare namespace API {
     url?: string;
   };
 
-  type listinterfaceInfoByPageUsingGETParams = {
+  type listInterfaceInfoByPageUsingGETParams = {
     createTime?: string;
     current?: number;
     description?: string;
@@ -148,7 +148,7 @@ declare namespace API {
     userId?: number;
   };
 
-  type listinterfaceInfoUsingGETParams = {
+  type listInterfaceInfoUsingGETParams = {
     createTime?: string;
     current?: number;
     description?: string;
