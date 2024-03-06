@@ -49,11 +49,14 @@ const TableList: React.FC = () => {
         ...fields,
       });
       hide();
-      message.success('Added successfully');
+      message.success('创建成功');
+      // 创建成功后关闭模态框
+      handleModalOpen(false);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       hide();
-      message.error('Adding failed, please try again!');
+      // 创建失败提示 创建失败 和 报错信息
+      message.error('创建失败，请重试' + error.message);
       return false;
     }
   };
