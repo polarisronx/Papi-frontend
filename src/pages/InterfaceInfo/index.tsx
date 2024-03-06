@@ -230,11 +230,20 @@ const TableList: React.FC = () => {
           const res = await listinterfaceInfoByPageUsingGet({
             ...params
           })
+          // 如果能够从后端获取返回的接口信息
           if (res?.data) {
+            // 返回一个包含数据、成功状态和数据条数的对象
             return {
               data: res?.data.records || [],
               success: true,
-              total: res.total,
+              total: res?.data.total || 0,
+            }
+          } else {
+            // 如果数据不存在，返回一个空数组，失败的状态和总数为零
+            return {
+              data: [],
+              success: false,
+              total: 0,
             }
           }
         }}
