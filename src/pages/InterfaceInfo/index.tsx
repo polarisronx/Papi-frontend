@@ -15,7 +15,7 @@ import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {addInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
+import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
 import CreateModal from './components/CreateForm';
 import UpdateModal from './components/UpdateForm';
 
@@ -90,7 +90,7 @@ const TableList: React.FC = () => {
     } catch (error:any) {
       hide();
       // 更新操作失败提示'操作失败'和报错信息
-      message.error('操作失败'+ error.message);
+      message.error('操作失败，'+ error.message);
       return false;
     }
   };
@@ -101,19 +101,25 @@ const TableList: React.FC = () => {
    *
    * @param selectedRows
    */
-  const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+  const handleRemove = async (record: API.InterfaceInfo) => {
+    // 设置加载中的提示为'正在删除'
     const hide = message.loading('正在删除');
-    if (!selectedRows) return true;
+    if (!record) return true;
     try {
-      await removeRule({
-        key: selectedRows.map((row) => row.key),
+      await deleteInterfaceInfoUsingPost({
+        // 把id传进来
+        id: record.id,
       });
       hide();
-      message.success('Deleted successfully and will refresh soon');
+      // 删除成功提示'删除成功'
+      message.success('删除成功');
+      // 删除成功则自动刷新表单
+      actionRef.current?.reload();
       return true;
-    } catch (error) {
+    } catch (error:any) {
       hide();
-      message.error('Delete failed, please try again');
+      // 删除失败提示'删除失败'和报错信息
+      message.error('删除失败，'+ error.message);
       return false;
     }
   };
@@ -215,6 +221,14 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
+        <a
+        key="config"
+        onClick={() => {
+          handleRemove(record);
+        }}
+      >
+        删除
+      </a>,
        
       ],
     },
