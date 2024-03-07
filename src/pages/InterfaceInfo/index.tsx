@@ -15,8 +15,9 @@ import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {addInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet} from "@/services/openAPI-backend/interfaceInfoController";
-import CreateModal from './components/UpdateForm';
+import {addInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
+import CreateModal from './components/CreateForm';
+import UpdateModal from './components/UpdateForm';
 
 
 const TableList: React.FC = () => {
@@ -32,8 +33,10 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  // 用于获取保存用户当前点击的数据项的 id
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
+  const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo[]>([]);
+
 
   // 模态框的变量都在TableList组件里，所以把 增删改 handleAdd handleUpdate handleDelete 都放进来
   /**
@@ -67,20 +70,27 @@ const TableList: React.FC = () => {
    *
    * @param fields
    */
-  const handleUpdate = async (fields: FormValueType) => {
-    const hide = message.loading('Configuring');
+  const handleUpdate = async (fields: API.InterfaceInfo) => {
+    // 如果没有 选中行currentRow,直接返回
+    if(!currentRow){
+      return;
+    }
+    // 加载中时的提示设置为'修改中'
+    const hide = message.loading('修改中');
     try {
-      await updateRule({
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      // 把原先updateRule改成我们的updateInterfaceInfoUsingPOST
+      await updateInterfaceInfoUsingPost({
+        id: currentRow.id,// 把id传进来
+        ...fields, //... 表示至少有一个参数为fields
       });
       hide();
-      message.success('Configuration is successful');
+      // 调用成功时提示'操作成功'
+      message.success('操作成功');
       return true;
-    } catch (error) {
+    } catch (error:any) {
       hide();
-      message.error('Configuration failed, please try again!');
+      // 更新操作失败提示'操作失败'和报错信息
+      message.error('操作失败'+ error.message);
       return false;
     }
   };
@@ -122,27 +132,20 @@ const TableList: React.FC = () => {
       // tip: render: 渲染类型,默认text
       valueType: 'index',// 数据类型
     },
-    // {
-    //   title: '规则名称',
-    //   dataIndex: 'name',
-    //   tip: 'The rule name is the unique key',
-    //   render: (dom, entity) => {
-    //     return (
-    //       <a
-    //         onClick={() => {
-    //           setCurrentRow(entity);
-    //           setShowDetail(true);
-    //         }}
-    //       >
-    //         {dom}
-    //       </a>
-    //     );
-    //   },
-    // },
+    
     {
       title: '接口名称',
       dataIndex: 'name',
       valueType: 'text',
+      formItemProps: {
+        rules: [{
+          // 必填项
+          required: true,
+          message: '接口名称是必填项'
+        }
+        ]
+        
+      }
     },
     {
       title: '描述',
@@ -296,7 +299,10 @@ const TableList: React.FC = () => {
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-      <UpdateForm
+      {/* 之前是UpdateForm,现在改成UpdateModal */}
+      <UpdateModal
+        // 把columns传递进来，不然修改模态框没有表单项
+        columns={columns}
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
@@ -313,7 +319,8 @@ const TableList: React.FC = () => {
             setCurrentRow(undefined);
           }
         }}
-        updateModalOpen={updateModalOpen}
+        // visible 控制模态窗的开关，要传进来
+        visible={updateModalOpen}
         values={currentRow || {}}
       />
 
@@ -353,7 +360,7 @@ const TableList: React.FC = () => {
         }}
         // 根据 visible 的值决定模态窗口是否显示
         visible={createModalOpen}
-        />
+      />
     </PageContainer>
   );
 };
