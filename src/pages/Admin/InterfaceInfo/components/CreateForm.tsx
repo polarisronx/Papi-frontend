@@ -27,7 +27,8 @@ const CreateModal: React.FC<Props> = (props) => {
     // 创建一个modal组件，通过visible属性控制其显示或隐藏。
     // footer 设置为null，这样能把表单项的取消和确认按钮去掉
     <Modal open={visible} footer={null} onCancel={() => onCancel?.()}>
-      // 创建一个ProTable组件，设定它为表单类型，通过columns属性设置表格的列，提交表单时调用onSubmit函数
+      {/* 创建一个ProTable组件，设定它为表单类型，通过columns属性设置表格的列，
+      提交表单时调用onSubmit函数 */}
       <ProTable 
         type="form" 
         columns={columns} 

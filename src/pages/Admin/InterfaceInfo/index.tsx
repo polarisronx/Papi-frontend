@@ -15,7 +15,7 @@ import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
+import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, offlineInterfaceInfoUsingPost, onlineInterfaceInfoUsingPost, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
 import CreateModal from './components/CreateForm';
 import UpdateModal from './components/UpdateForm';
 
@@ -40,8 +40,8 @@ const TableList: React.FC = () => {
 
   // 模态框的变量都在TableList组件里，所以把 增删改 handleAdd handleUpdate handleDelete 都放进来
   /**
-   * @en-US Add node
-   * @zh-CN 添加节点
+   * @en-US Add Interface
+   * @zh-CN 添加接口
    * @param fields // 修改参数的类型为 InterfaceInfo
    */
   const handleAdd = async (fields: API.InterfaceInfo) => {
@@ -65,8 +65,8 @@ const TableList: React.FC = () => {
   };
 
   /**
-   * @en-US Update node
-   * @zh-CN 更新节点
+   * @en-US Update Interface
+   * @zh-CN 更新接口
    *
    * @param fields
    */
@@ -96,8 +96,8 @@ const TableList: React.FC = () => {
   };
 
   /**
-   *  Delete node
-   * @zh-CN 删除节点
+   *  Delete Interface
+   * @zh-CN 删除接口
    *
    * @param selectedRows
    */
@@ -123,9 +123,68 @@ const TableList: React.FC = () => {
       return false;
     }
   };
-  
-  
-  
+
+  /**
+   *  Online Interface
+   * @zh-CN 上线接口
+   *
+   * @param selectedRows
+   */
+  const handleOnline = async (record: API.InterfaceInfo) => {
+    // 设置加载中的提示为'正在上线'
+    const hide = message.loading('正在上线');
+    if (!record) return true;
+    try {
+      await onlineInterfaceInfoUsingPost({
+        // 把id传进来
+        id: record.id,
+      });
+      hide();
+      // 上线成功提示'上线成功'
+      message.success('上线成功');
+      // 上线成功则自动刷新表单
+      actionRef.current?.reload();
+      return true;
+    } catch (error:any) {
+      hide();
+      // 上线失败提示'上线失败'和报错信息
+      message.error('上线失败，'+ error.message);
+      return false;
+    }
+  };
+
+
+  /**
+   *  Offline Interface
+   * @zh-CN 下线接口
+   *
+   * @param selectedRows
+   */
+  const handleOffline = async (record: API.InterfaceInfo) => {
+    // 设置加载中的提示为'正在下线'
+    const hide = message.loading('正在下线');
+    if (!record) return true;
+    try {
+      await offlineInterfaceInfoUsingPost({
+        // 把id传进来
+        id: record.id,
+      });
+      hide();
+      // 下线成功提示'下线成功'
+      message.success('下线成功');
+      // 下线成功则自动刷新表单
+      actionRef.current?.reload();
+      return true;
+    } catch (error:any) {
+      hide();
+      // 下线失败提示'下线失败'和报错信息
+      message.error('下线失败，'+ error.message);
+      return false;
+    }
+  };
+
+
+
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -138,7 +197,7 @@ const TableList: React.FC = () => {
       // tip: render: 渲染类型,默认text
       valueType: 'index',// 数据类型
     },
-    
+
     {
       title: '接口名称',
       dataIndex: 'name',
@@ -150,7 +209,7 @@ const TableList: React.FC = () => {
           message: '接口名称是必填项'
         }
         ]
-        
+
       }
     },
     {
@@ -221,15 +280,39 @@ const TableList: React.FC = () => {
         >
           修改
         </a>,
-        <a
+        // 上线和下线不同时出现
+        record.status === 0? 
+        (<a
+          key="online"
+          onClick={() => {
+            handleOnline(record);
+          }}
+        >
+          上线
+        </a>)
+        : record.status === 1?
+        (<Button
+          type="text"
+          danger
+          key="offline"
+          onClick={() => {
+            handleOffline(record);
+          }}
+        >
+          下线
+        </Button>
+        ):null,
+        <Button
+        danger
+        type="text"
         key="config"
         onClick={() => {
           handleRemove(record);
         }}
       >
         删除
-      </a>,
-       
+      </Button>,
+
       ],
     },
   ];

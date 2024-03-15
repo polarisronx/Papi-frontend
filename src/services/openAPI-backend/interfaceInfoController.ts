@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** addinterfaceInfo POST /api/interfaceInfo/add */
+/** addInterfaceInfo POST /api/interfaceInfo/add */
 export async function addInterfaceInfoUsingPost(
   body: API.InterfaceInfoAddRequest,
   options?: { [key: string]: any },
@@ -17,7 +17,7 @@ export async function addInterfaceInfoUsingPost(
   });
 }
 
-/** deleteinterfaceInfo POST /api/interfaceInfo/delete */
+/** deleteInterfaceInfo POST /api/interfaceInfo/delete */
 export async function deleteInterfaceInfoUsingPost(
   body: API.DeleteRequest,
   options?: { [key: string]: any },
@@ -47,7 +47,7 @@ export async function getInterfaceInfoByIdUsingGet(
   });
 }
 
-/** listinterfaceInfo GET /api/interfaceInfo/list */
+/** listInterfaceInfo GET /api/interfaceInfo/list */
 export async function listInterfaceInfoUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.listInterfaceInfoUsingGETParams,
@@ -62,7 +62,7 @@ export async function listInterfaceInfoUsingGet(
   });
 }
 
-/** listinterfaceInfoByPage GET /api/interfaceInfo/list/page */
+/** listInterfaceInfoByPage GET /api/interfaceInfo/list/page */
 export async function listInterfaceInfoByPageUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.listInterfaceInfoByPageUsingGETParams,
@@ -77,7 +77,37 @@ export async function listInterfaceInfoByPageUsingGet(
   });
 }
 
-/** updateinterfaceInfo POST /api/interfaceInfo/update */
+/** offlineInterfaceInfo POST /api/interfaceInfo/offline */
+export async function offlineInterfaceInfoUsingPost(
+  body: API.IdRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseboolean>('/api/interfaceInfo/offline', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** onlineInterfaceInfo POST /api/interfaceInfo/online */
+export async function onlineInterfaceInfoUsingPost(
+  body: API.IdRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseboolean>('/api/interfaceInfo/online', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** updateInterfaceInfo POST /api/interfaceInfo/update */
 export async function updateInterfaceInfoUsingPost(
   body: API.InterfaceInfoUpdateRequest,
   options?: { [key: string]: any },
