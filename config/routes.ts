@@ -6,9 +6,16 @@ export default [
     component: './Index'
   },
   {
+    name: '接口详情页',
+    icon: 'BarChartOutlined',
+    path: '/interface_details',
+    component: './InterfaceInfo',
+    hideInMenu: true, // 在菜单隐藏
+  },
+  {
     name:'登录',
     path: '/user',
-    layout: false,
+    layout: false, //通过配置 layout: false 可以单独关闭某一个路由的全局布局
     routes: [{ path: '/user/login', component: './User/Login' }] },
   {
     name: '管理页面',

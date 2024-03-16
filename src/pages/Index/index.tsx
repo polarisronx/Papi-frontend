@@ -1,8 +1,7 @@
 // @ts-ignore
 import { PageContainer } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Skeleton,Card, theme,message } from 'antd';
+import { List,message } from 'antd';
 import { TrophyFilled } from '@ant-design/icons';
 import { listInterfaceInfoByPageUsingGet } from '@/services/openAPI-backend/interfaceInfoController';
 
@@ -12,7 +11,8 @@ import { listInterfaceInfoByPageUsingGet } from '@/services/openAPI-backend/inte
  * @returns
  */
 const Index: React.FC = () =>{
-  // 使用 useState 和 泛型来定义组件内的状态
+  
+  // 定义状态和钩子函数，使用 useState 和 泛型来定义组件内的状态
   // 加载状态
   const [loading, setLoading] = useState(true);
   // 列表数据
@@ -61,11 +61,15 @@ const Index: React.FC = () =>{
           dataSource={list}
           // 渲染每个列表项
           renderItem={(item) => {
+            // 构建列表项的链接地址
             const apiLink = `/interface_info/${item.id}`;
             return (
+              // 显示 接口详情 链接
               <List.Item actions={[<a key={item.id} href={apiLink}>接口详情</a>]}>
                 <List.Item.Meta
+                  // 列表项标题显示未可点击的链接
                   title={<a href={apiLink}>{item.name}</a>}
+                  // 列表项描述 
                   description={item.description}
                 />
               </List.Item>
