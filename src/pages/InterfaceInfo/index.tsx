@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import {Button, Card, Descriptions, Form, message, Input, Spin, Divider, Badge} from 'antd';
 import { TrophyFilled } from '@ant-design/icons';
-import { getInterfaceInfoByIdUsingGet } from '@/services/openAPI-backend/interfaceInfoController';
+import { getInterfaceInfoByIdUsingGet,invokeInterfaceInfoUsingPost } from '@/services/openAPI-backend/interfaceController';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
@@ -22,6 +22,10 @@ const Index: React.FC = () =>{
   const [total, setTotal] = useState<number>(0);
   // 使用 useParams 钩子函数来获取路由参数
   const params = useParams();
+  // 存储结果变量
+  const [invokeRes, setInvokeRes] = useState<any>();
+  // 调用加载状态变量，默认为false
+  const [invokeLoading, setInvokeLoading] = useState(false);
 
   // 定义异步加载数据的函数
   const fetchData = async (current=1,pageSize=5) => {
@@ -49,6 +53,29 @@ const Index: React.FC = () =>{
   };
 
 
+  const onFinish = async (values: any) => {
+    if (!params.id) {
+      message.error('接口不存在');
+      return;
+    }
+    // 在开始调用接口之前，将InvokerLoading设置为true表示正在加载
+    setInvokeLoading(true);
+    try {
+      const res = await invokeInterfaceInfoUsingPost({
+        id: params.id,
+        ...values,
+      });
+      // 将接口调用的结果更新到invokeRes变量中
+      setInvokeRes(res.data);
+      message.success('请求成功');
+    } catch (error: any) {
+      message.error('操作失败，' + error.message);
+    }
+    // 结束加载状态
+    setInvokeLoading(false);
+  };
+
+
   useEffect(() => {
     // 页面加载完成后调用加载数据的函数
     fetchData();
@@ -73,6 +100,28 @@ const Index: React.FC = () =>{
         ) : (
           <>接口不存在</>
         )}
+      </Card>
+      <Divider />
+      <Card title="在线测试">
+        {/*创建一个表单，垂直布局，提交时调用onfinish方法*/}
+        <Form name="invoke" layout="vertical" onFinish={onFinish}>
+          {/*创建一个表单项，用于输入请求参数*/}
+          <Form.Item label="请求参数" name="userRequestParams">
+            <Input.TextArea />
+          </Form.Item>
+          {/*创建一个包裹项，占据16个栅格*/}
+          <Form.Item wrapperCol={{ span: 16 }}>
+            {/*创建一个按钮*/}
+            <Button type="primary" htmlType="submit">
+              调用
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+      <Divider />
+
+      <Card title="返回结果" loading={invokeLoading}>
+        {invokeRes}
       </Card>
         
     </PageContainer>

@@ -3,7 +3,7 @@ import { PageContainer } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { List,message } from 'antd';
 import { TrophyFilled } from '@ant-design/icons';
-import { listInterfaceInfoByPageUsingGet } from '@/services/openAPI-backend/interfaceInfoController';
+import { listInterfaceInfoByPageUsingGet } from '@/services/openAPI-backend/interfaceController';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件

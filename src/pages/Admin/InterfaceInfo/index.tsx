@@ -13,9 +13,8 @@ import {
 import '@umijs/max';
 import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
-import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, offlineInterfaceInfoUsingPost, onlineInterfaceInfoUsingPost, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceInfoController";
+import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, offlineInterfaceInfoUsingPost, onlineInterfaceInfoUsingPost, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceController";
 import CreateModal from './components/CreateForm';
 import UpdateModal from './components/UpdateForm';
 
@@ -222,7 +221,7 @@ const TableList: React.FC = () => {
     {
       title:'请求方法',
       dataIndex : 'method',
-      valueType: 'text ' ,
+      valueType: 'text' ,
     },
     {
       title: 'url',
@@ -242,11 +241,11 @@ const TableList: React.FC = () => {
     {
       title: '响应头',
       dataIndex: 'responseHeader',
-      valueType: 'jsonCode ' ,
+      valueType: 'jsonCode' ,
     },
     {
       title: '状态',
-      dataIndex: 'status ',
+      dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
         0: {
@@ -255,14 +254,14 @@ const TableList: React.FC = () => {
         },
         1: {
           text: '开启',
-          status : ' Processing',
+          status : 'Processing',
         },
       },
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'dateTime ',
+      valueType: 'dateTime',
       hideInForm: true,
     },
     {
