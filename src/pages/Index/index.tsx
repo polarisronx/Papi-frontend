@@ -62,7 +62,7 @@ const Index: React.FC = () =>{
           // 渲染每个列表项
           renderItem={(item) => {
             // 构建列表项的链接地址
-            const apiLink = `/interface_info/${item.id}`;
+            const apiLink = `/interface_details/${item.id}`;
             return (
               // 显示 接口详情 链接
               <List.Item actions={[<a key={item.id} href={apiLink}>接口详情</a>]}>

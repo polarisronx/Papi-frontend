@@ -2,7 +2,7 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { useParams } from 'react-router';
 import React, { useEffect, useState } from 'react';
-import {Button, Card, Descriptions, Form, message, Input, Spin, Divider,Badge} from 'antd';
+import {Button, Card, Descriptions, Form, message, Input, Spin, Divider, Badge} from 'antd';
 import { TrophyFilled } from '@ant-design/icons';
 import { getInterfaceInfoByIdUsingGet } from '@/services/openAPI-backend/interfaceInfoController';
 
@@ -60,7 +60,7 @@ const Index: React.FC = () =>{
        <Card>
         {data ? (
           <Descriptions title={data.name} column={1}>
-            <Descriptions.Item label="接口状态">{data.status ? <Badge status="processing" text="Processing" /> : <Badge status="error" text="Error" />}</Descriptions.Item>
+            <Descriptions.Item label="接口状态">{data.status ? <Badge status="processing" text="正在运行" color='green'/> : <Badge status="processing" text="停止运行" color='red'/>}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
             <Descriptions.Item label="请求地址">{data.url}</Descriptions.Item>
             <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>

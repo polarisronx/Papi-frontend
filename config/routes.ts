@@ -8,7 +8,7 @@ export default [
   {
     name: '接口详情页',
     icon: 'BarChartOutlined',
-    path: '/interface_details',
+    path: '/interface_details/:id',
     component: './InterfaceInfo',
     hideInMenu: true, // 在菜单隐藏
   },

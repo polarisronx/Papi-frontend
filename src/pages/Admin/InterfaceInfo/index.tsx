@@ -230,14 +230,19 @@ const TableList: React.FC = () => {
       valueType: 'text',
     },
     {
+      title: '请求参数',
+      dataIndex: 'requestParams',
+      valueType: 'jsonCode',
+    },
+    {
       title: '请求头',
       dataIndex: 'requestHeader',
-      valueType: 'textarea',
+      valueType: 'jsonCode',
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
-      valueType: 'textarea ' ,
+      valueType: 'jsonCode ' ,
     },
     {
       title: '状态',
@@ -263,7 +268,7 @@ const TableList: React.FC = () => {
     {
       title: '更新时间',
       dataIndex: 'updateTime',
-      valueType: 'dateTime ',
+      valueType: 'dateTime',
       hideInForm: true,
     },
     {
