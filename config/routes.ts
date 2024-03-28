@@ -23,7 +23,8 @@ export default [
     icon: 'crown',
     access: 'canAdmin',
     routes: [
-      { name: '接口管理', icon:'table', path: '/admin/interface_info', component: './Admin/InterfaceInfo' },
+      { name: '接口管理', icon:'table', path: '/admin/interface/info', component: './Admin/InterfaceInfo' },
+      { name: '接口分析', icon:'analysis', path: '/admin/interface/analysis', component: './Admin/InterfaceAnalysis' }
     ],
   },
   // { name: '表格', icon: 'table', path: '/list', component: './TableList' },
