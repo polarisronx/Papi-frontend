@@ -1,37 +1,34 @@
+import { listTopInvokeInterfaceUsingGet } from '@/services/openAPI-backend/analysisController';
 import { PageContainer } from '@ant-design/pro-components';
 import '@umijs/max';
-import React, {useEffect, useState} from 'react';
 import ReactECharts from 'echarts-for-react';
-import {listTopInvokeInterfaceInfoUsingGET} from "@/services/yuapi-backend/analysisController";
+import React, { useEffect, useState } from 'react';
 
 /**
  * 接口分析
  * @constructor
  */
 const InterfaceAnalysis: React.FC = () => {
-
-  const [data, setData] = useState<API.InterfaceInfoVO[]>([]);
+  const [data, setData] = useState<API.InterfaceCountVO[]>([]);
 
   useEffect(() => {
     try {
-      listTopInvokeInterfaceInfoUsingGET().then(res => {
+      listTopInvokeInterfaceUsingGet().then((res) => {
         if (res.data) {
           setData(res.data);
         }
-      })
-    } catch (e: any) {
-
-    }
+      });
+    } catch (e: any) {}
     // todo 从远程获取数据
-  }, [])
+  }, []);
 
   // 映射：{ value: 1048, name: 'Search Engine' },
-  const chartData = data.map(item => {
+  const chartData = data.map((item) => {
     return {
       value: item.totalNum,
       name: item.name,
-    }
-  })
+    };
+  });
 
   const option = {
     title: {

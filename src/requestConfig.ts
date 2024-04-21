@@ -1,7 +1,8 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import { message, notification } from 'antd';
-
+import { history } from '@umijs/max';
+import { message } from 'antd';
+import Cookies from 'js-cookie';
 // 错误处理方案： 错误类型
 enum ErrorShowType {
   SILENT = 0,
@@ -25,17 +26,22 @@ interface ResponseStructure {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const requestConfig: RequestConfig = {
-  baseURL:'http://localhost:7529',
+  baseURL: 'http://localhost:7529',
   // 携带 cookie
   withCredentials: true,
   // 错误处理： umi@3 的错误处理方案。（已被移除）
-  
+
   // 请求拦截器
   requestInterceptors: [
-    (config: RequestOptions) => {
-      // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
-      return { ...config, url };
+    // 拦截请求配置，进行个性化处理。
+    (url: string, config: RequestOptions) => {
+      const newConfig = { ...config };
+      newConfig.headers = {
+        ...newConfig.headers,
+        // 添加请求头
+        Authorization: Cookies.get('token')?.toString() || '',
+      };
+      return { ...config, url, options: newConfig };
     },
   ],
 
@@ -46,12 +52,24 @@ export const requestConfig: RequestConfig = {
       const { data } = response as unknown as ResponseStructure;
       // 打印响应数据用于调试
       console.log('response data:', data);
-      // 当响应的状态码不为0则抛出错误
-      if (data.code !== 0) {
-        message.error('请求失败！');
-        throw new Error(data.message);
+      const { code } = data;
+      // 响应成功，返回响应
+      if (data && code === 0) {
+        return response;
+      } else {
+        switch (code) {
+          case 40100:
+            history.push('/user/login');
+            break;
+          default:
+            // if (location.pathname.includes("/")) {
+            //   break
+            // }
+
+            message.error(data.message);
+            break;
+        }
       }
-      // 响应正常，返回响应数据
       return response;
     },
   ],

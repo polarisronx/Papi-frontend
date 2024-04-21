@@ -1,23 +1,24 @@
-import { addRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
+import {
+  addInterfaceInfoUsingPost,
+  deleteInterfaceInfoUsingPost,
+  listInterfaceInfoByPageUsingGet,
+  offlineInterfaceInfoUsingPost,
+  onlineInterfaceInfoUsingPost,
+  updateInterfaceInfoUsingPost,
+} from '@/services/openAPI-backend/interfaceController';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   FooterToolbar,
-  ModalForm,
   PageContainer,
   ProDescriptions,
-  ProFormText,
-  ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
 import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
-import UpdateForm from './components/UpdateForm';
-import {addInterfaceInfoUsingPost, deleteInterfaceInfoUsingPost, listInterfaceInfoByPageUsingGet, offlineInterfaceInfoUsingPost, onlineInterfaceInfoUsingPost, updateInterfaceInfoUsingPost} from "@/services/openAPI-backend/interfaceController";
 import CreateModal from './components/CreateForm';
 import UpdateModal from './components/UpdateForm';
-
 
 const TableList: React.FC = () => {
   /**
@@ -35,7 +36,6 @@ const TableList: React.FC = () => {
   // 用于获取保存用户当前点击的数据项的 id
   const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
   const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfo[]>([]);
-
 
   // 模态框的变量都在TableList组件里，所以把 增删改 handleAdd handleUpdate handleDelete 都放进来
   /**
@@ -71,7 +71,7 @@ const TableList: React.FC = () => {
    */
   const handleUpdate = async (fields: API.InterfaceInfo) => {
     // 如果没有 选中行currentRow,直接返回
-    if(!currentRow){
+    if (!currentRow) {
       return;
     }
     // 加载中时的提示设置为'修改中'
@@ -79,17 +79,17 @@ const TableList: React.FC = () => {
     try {
       // 把原先updateRule改成我们的updateInterfaceInfoUsingPOST
       await updateInterfaceInfoUsingPost({
-        id: currentRow.id,// 把id传进来
+        id: currentRow.id, // 把id传进来
         ...fields, //... 表示至少有一个参数为fields
       });
       hide();
       // 调用成功时提示'操作成功'
       message.success('操作成功');
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
       // 更新操作失败提示'操作失败'和报错信息
-      message.error('操作失败，'+ error.message);
+      message.error('操作失败，' + error.message);
       return false;
     }
   };
@@ -115,10 +115,10 @@ const TableList: React.FC = () => {
       // 删除成功则自动刷新表单
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
       // 删除失败提示'删除失败'和报错信息
-      message.error('删除失败，'+ error.message);
+      message.error('删除失败，' + error.message);
       return false;
     }
   };
@@ -144,14 +144,13 @@ const TableList: React.FC = () => {
       // 上线成功则自动刷新表单
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
       // 上线失败提示'上线失败'和报错信息
-      message.error('上线失败，'+ error.message);
+      message.error('上线失败，' + error.message);
       return false;
     }
   };
-
 
   /**
    *  Offline Interface
@@ -174,15 +173,13 @@ const TableList: React.FC = () => {
       // 下线成功则自动刷新表单
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
       // 下线失败提示'下线失败'和报错信息
-      message.error('下线失败，'+ error.message);
+      message.error('下线失败，' + error.message);
       return false;
     }
   };
-
-
 
   /**
    * @en-US International configuration
@@ -194,7 +191,7 @@ const TableList: React.FC = () => {
       title: 'id', // 要显示的列名
       dataIndex: 'id', // 对应字段名
       // tip: render: 渲染类型,默认text
-      valueType: 'index',// 数据类型
+      valueType: 'index', // 数据类型
     },
 
     {
@@ -202,14 +199,14 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'text',
       formItemProps: {
-        rules: [{
-          // 必填项
-          required: true,
-          message: '接口名称是必填项'
-        }
-        ]
-
-      }
+        rules: [
+          {
+            // 必填项
+            required: true,
+            message: '接口名称是必填项',
+          },
+        ],
+      },
     },
     {
       title: '描述',
@@ -219,13 +216,13 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
     },
     {
-      title:'请求方法',
-      dataIndex : 'method',
-      valueType: 'text' ,
+      title: '请求方法',
+      dataIndex: 'method',
+      valueType: 'text',
     },
     {
-      title: 'url',
-      dataIndex: 'url',
+      title: '服务地址',
+      dataIndex: 'endpoint',
       valueType: 'text',
     },
     {
@@ -241,7 +238,7 @@ const TableList: React.FC = () => {
     {
       title: '响应头',
       dataIndex: 'responseHeader',
-      valueType: 'jsonCode' ,
+      valueType: 'jsonCode',
     },
     {
       title: '状态',
@@ -254,7 +251,7 @@ const TableList: React.FC = () => {
         },
         1: {
           text: '开启',
-          status : 'Processing',
+          status: 'Processing',
         },
       },
     },
@@ -285,38 +282,37 @@ const TableList: React.FC = () => {
           修改
         </a>,
         // 上线和下线不同时出现
-        record.status === 0? 
-        (<a
-          key="online"
-          onClick={() => {
-            handleOnline(record);
-          }}
-        >
-          上线
-        </a>)
-        : record.status === 1?
-        (<Button
-          type="text"
-          danger
-          key="offline"
-          onClick={() => {
-            handleOffline(record);
-          }}
-        >
-          下线
-        </Button>
-        ):null,
+        record.status === 0 ? (
+          <a
+            key="online"
+            onClick={() => {
+              handleOnline(record);
+            }}
+          >
+            上线
+          </a>
+        ) : record.status === 1 ? (
+          <Button
+            type="text"
+            danger
+            key="offline"
+            onClick={() => {
+              handleOffline(record);
+            }}
+          >
+            下线
+          </Button>
+        ) : null,
         <Button
-        danger
-        type="text"
-        key="config"
-        onClick={() => {
-          handleRemove(record);
-        }}
-      >
-        删除
-      </Button>,
-
+          danger
+          type="text"
+          key="config"
+          onClick={() => {
+            handleRemove(record);
+          }}
+        >
+          删除
+        </Button>,
       ],
     },
   ];
@@ -343,8 +339,8 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => {
           const res = await listInterfaceInfoByPageUsingGet({
-            ...params
-          })
+            ...params,
+          });
           // 如果能够从后端获取返回的接口信息
           if (res?.data) {
             // 返回一个包含数据、成功状态和数据条数的对象
@@ -352,14 +348,14 @@ const TableList: React.FC = () => {
               data: res?.data.records || [],
               success: true,
               total: res?.data.total || 0,
-            }
+            };
           } else {
             // 如果数据不存在，返回一个空数组，失败的状态和总数为零
             return {
               data: [],
               success: false,
               total: 0,
-            }
+            };
           }
         }}
         columns={columns}
@@ -456,7 +452,7 @@ const TableList: React.FC = () => {
         }}
         // 当点击确认按钮时，调用handleAdd函数来添加数据，去请求后端添加数据
         // 这里报错时因为组件的属性和外层的不一致，可以不管
-        onSubmit={(values) =>{
+        onSubmit={(values) => {
           handleAdd(values);
         }}
         // 根据 visible 的值决定模态窗口是否显示
