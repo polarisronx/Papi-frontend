@@ -1,16 +1,15 @@
 import { AvatarDropdown, AvatarName, Footer, Question } from '@/components';
 
+import { getLoginUserUsingGet } from '@/services/openAPI-backend/userController';
 import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { Link, history } from '@umijs/max';
-import defaultSettings from '../config/defaultSettings';
+import Settings from '../config/defaultSettings';
 import { requestConfig } from './requestConfig';
-import {getLoginUserUsingGet} from "@/services/openAPI-backend/userController";
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
-
+const LOGIN_WHITE_LIST = ['/user/register', '/agreement/privacy', 'agreement/user', loginPath];
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
@@ -19,7 +18,12 @@ export async function getInitialState(): Promise<InitialState> {
   const state: InitialState = {
     // 初始化用户登录的状态，初始值设为 undefined
     loginUser: undefined,
+    settings: Settings,
+  };
+  if (LOGIN_WHITE_LIST.includes(history.location.pathname)) {
+    return state;
   }
+
   try {
     // 调用 getLoginUserUsingGET() 方法，尝试获取当前已经登录的用户信息
     const res = await getLoginUserUsingGet();
@@ -27,14 +31,17 @@ export async function getInitialState(): Promise<InitialState> {
     if (res.data) {
       state.loginUser = res.data;
     }
-  // 如果在获取用户信息的过程中发生了错误，就把页面重定向到登录页面
+    // 如果在获取用户信息的过程中发生了错误，就把页面重定向到登录页面
   } catch (error) {
     history.push(loginPath);
   }
   // 返回修改后的状态
-    return state;
-  };
-
+  return state;
+}
+/** 获取用户信息比较慢的时候会展示一个 loading */
+// export const initialStateConfig = {
+//   loading: <PageLoading />,
+// };
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -53,8 +60,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
+      if (LOGIN_WHITE_LIST.includes(location.pathname)) {
+        return; // 如果出现在白名单中，则不重定向
+      }
       // 如果没有登录，重定向到 login
-      if (!initialState?.loginUser && location.pathname !== loginPath) {
+      if (!initialState?.loginUser) {
         history.push(loginPath);
       }
     },
