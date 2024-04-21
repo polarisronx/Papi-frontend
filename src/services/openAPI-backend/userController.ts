@@ -14,6 +14,14 @@ export async function addUserUsingPost(body: API.UserAddRequest, options?: { [ke
   });
 }
 
+/** getLoginUser GET /api/user/currentUser */
+export async function getLoginUserUsingGet(options?: { [key: string]: any }) {
+  return request<API.BaseResponseUserVO>('/api/user/currentUser', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** deleteUser POST /api/user/delete */
 export async function deleteUserUsingPost(
   body: API.DeleteRequest,
@@ -40,14 +48,6 @@ export async function getUserByIdUsingGet(
     params: {
       ...params,
     },
-    ...(options || {}),
-  });
-}
-
-/** getLoginUser GET /api/user/get/login */
-export async function getLoginUserUsingGet(options?: { [key: string]: any }) {
-  return request<API.BaseResponseUserVO>('/api/user/get/login', {
-    method: 'GET',
     ...(options || {}),
   });
 }
@@ -82,12 +82,27 @@ export async function listUserByPageUsingGet(
   });
 }
 
-/** userLogin POST /api/user/login */
+/** userLoginViaMail POST /api/user/loginViaMail */
+export async function userLoginViaMailUsingPost(
+  body: API.UserLoginViaMailRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponsestring>('/api/user/loginViaMail', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** userLogin POST /api/user/loginViaPassword */
 export async function userLoginUsingPost(
   body: API.UserLoginRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.BaseResponseUser>('/api/user/login', {
+  return request<API.BaseResponsestring>('/api/user/loginViaPassword', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -111,6 +126,21 @@ export async function userRegisterUsingPost(
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponselong>('/api/user/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** userQuickRegisterViaMail POST /api/user/registerViaMail */
+export async function userQuickRegisterViaMailUsingPost(
+  body: API.UserRegisterViaMailRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponselong>('/api/user/registerViaMail', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

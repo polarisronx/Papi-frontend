@@ -65,9 +65,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseUser = {
+  type BaseResponsestring = {
     code?: number;
-    data?: User;
+    data?: string;
     message?: string;
   };
 
@@ -85,6 +85,11 @@ declare namespace API {
 
   type DeleteRequest = {
     id?: number;
+  };
+
+  type Field = {
+    fieldName?: string;
+    value?: string;
   };
 
   type getInterfaceInfoByIdUsingGET1Params = {
@@ -107,35 +112,43 @@ declare namespace API {
   };
 
   type InterfaceCountVO = {
+    action?: string;
     createTime?: string;
     description?: string;
+    endpoint?: string;
     id?: number;
+    interfaceAvatar?: string;
+    interfaceType?: number;
     isDelete?: number;
     method?: string;
     name?: string;
+    path?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
     status?: number;
     totalNum?: number;
     updateTime?: string;
-    url?: string;
     userId?: number;
   };
 
   type InterfaceInfo = {
+    action?: string;
     createTime?: string;
     description?: string;
+    endpoint?: string;
     id?: number;
+    interfaceAvatar?: string;
+    interfaceType?: number;
     isDelete?: number;
     method?: string;
     name?: string;
+    path?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
     status?: number;
     updateTime?: string;
-    url?: string;
     userId?: number;
   };
 
@@ -163,7 +176,7 @@ declare namespace API {
 
   type InterfaceInvokeRequest = {
     id?: number;
-    userRequestParams?: string;
+    requestParams?: Field[];
   };
 
   type listInterfaceInfoByPageUsingGET1Params = {
@@ -384,19 +397,9 @@ declare namespace API {
     total?: number;
   };
 
-  type User = {
-    accessKey?: string;
-    createTime?: string;
-    gender?: number;
-    id?: number;
-    isDelete?: number;
-    secretKey?: string;
-    updateTime?: string;
-    userAccount?: string;
-    userAvatar?: string;
-    userName?: string;
-    userPassword?: string;
-    userRole?: string;
+  type sendUserMailUsingGETParams = {
+    /** mailAccount */
+    mailAccount?: string;
   };
 
   type UserAddRequest = {
@@ -439,10 +442,21 @@ declare namespace API {
     userPassword?: string;
   };
 
+  type UserLoginViaMailRequest = {
+    code?: string;
+    emailAccount?: string;
+  };
+
   type UserRegisterRequest = {
     checkPassword?: string;
     userAccount?: string;
     userPassword?: string;
+  };
+
+  type UserRegisterViaMailRequest = {
+    code?: string;
+    userAccount?: string;
+    userMail?: string;
   };
 
   type UserUpdateRequest = {
@@ -456,9 +470,11 @@ declare namespace API {
   };
 
   type UserVO = {
+    accessKey?: string;
     createTime?: string;
     gender?: number;
     id?: number;
+    secretKey?: string;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;
